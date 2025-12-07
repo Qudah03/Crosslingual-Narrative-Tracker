@@ -372,3 +372,66 @@ Output files:
 2025-12-07 16:06:43,035 - INFO -   - data/processed/narrative_analysis.parquet
 2025-12-07 16:06:43,035 - INFO - 
 Next: Run 'streamlit run dashboard/app.py' to view results
+2025-12-07 16:45:30,336 - INFO - 
+============================================================
+2025-12-07 16:45:30,337 - INFO - CROSSLINGUAL NARRATIVE TRACKER - ML PIPELINE
+2025-12-07 16:45:30,337 - INFO - Started at: 2025-12-07 16:45:30
+2025-12-07 16:45:30,337 - INFO - ============================================================
+
+2025-12-07 16:45:30,337 - INFO - ============================================================
+2025-12-07 16:45:30,337 - INFO - Step 1: Generate Embeddings
+2025-12-07 16:45:30,337 - INFO - ============================================================
+2025-12-07 16:46:22,237 - INFO - Found 4 JSON files: ['data/raw\\aljazeera_ar.json', 'data/raw\\bbc.json', 'data/raw\\dw.json', 'data/raw\\lemonde.json']
+2025-12-07 16:46:22,237 - INFO - Loading articles...
+2025-12-07 16:46:22,297 - INFO - Loaded 25 articles from data/raw\aljazeera_ar.json
+2025-12-07 16:46:22,322 - INFO - Loaded 58 articles from data/raw\bbc.json
+2025-12-07 16:46:22,345 - INFO - Loaded 208 articles from data/raw\dw.json
+2025-12-07 16:46:22,345 - INFO - Loaded 208 articles from data/raw\lemonde.json
+2025-12-07 16:46:22,348 - INFO - Encoding 208 articles with intfloat/multilingual-e5-large...
+2025-12-07 16:46:22,350 - INFO - Use pytorch device_name: cpu
+2025-12-07 16:46:22,350 - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-12-07 16:46:33,983 - INFO - Saved embeddings to data/processed/embeddings.parquet
+2025-12-07 16:46:34,886 - INFO - [OK] Step 1 completed successfully
+
+2025-12-07 16:46:34,886 - INFO - ============================================================
+2025-12-07 16:46:34,886 - INFO - Step 2: Cluster Articles
+2025-12-07 16:46:34,886 - INFO - ============================================================
+2025-12-07 16:46:42,765 - INFO - Loading embeddings from data/processed/embeddings.parquet...
+2025-12-07 16:46:43,281 - INFO - Loaded 208 articles with embeddings.
+2025-12-07 16:46:43,283 - INFO - Embedding shape: (208, 1024)
+2025-12-07 16:46:43,283 - INFO - Starting dimensionality reduction with UMAP...
+2025-12-07 16:46:50,237 - INFO - Dimensionality reduction completed.
+2025-12-07 16:46:50,238 - INFO - Starting clustering with HDBSCAN...
+2025-12-07 16:46:50,275 - INFO - Saved clustered articles to data/processed/clustered_articles.parquet
+2025-12-07 16:46:50,275 - INFO - Identified 2 clusters.
+2025-12-07 16:46:50,275 - INFO - Cluster size distribution:
+2025-12-07 16:46:50,276 - INFO - cluster
+1    182
+0     26
+2025-12-07 16:46:50,660 - INFO - [OK] Step 2 completed successfully
+
+2025-12-07 16:46:50,660 - INFO - ============================================================
+2025-12-07 16:46:50,660 - INFO - Step 3: Analyze Narratives
+2025-12-07 16:46:50,661 - INFO - ============================================================
+2025-12-07 16:46:55,070 - INFO - Loading articles from data/processed/clustered_articles.parquet...
+2025-12-07 16:46:55,119 - INFO - Loading embedding model: intfloat/multilingual-e5-large
+2025-12-07 16:46:55,120 - INFO - Use pytorch device_name: cpu
+2025-12-07 16:46:55,120 - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-12-07 16:46:58,262 - INFO - Extracting narrative features...
+2025-12-07 16:46:58,264 - ERROR - Error extracting narrative features: 'NarrativeAnalyzer' object has no attribute 'source_map'
+2025-12-07 16:46:58,265 - ERROR - Error in narrative analysis: 'NarrativeAnalyzer' object has no attribute 'source_map'
+Traceback (most recent call last):
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\pipeline\narrative_analyzer.py", line 270, in main
+    df = analyzer.extract_narrative_features(df)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\pipeline\narrative_analyzer.py", line 96, in extract_narrative_features
+    df["source_bias"] = df["source_clean"].map(self.source_map).fillna("unknown")
+                                               ^^^^^^^^^^^^^^^
+AttributeError: 'NarrativeAnalyzer' object has no attribute 'source_map'
+2025-12-07 16:46:59,037 - ERROR - Pipeline halted at Step 3
+2025-12-07 16:46:59,037 - INFO - ============================================================
+2025-12-07 16:46:59,037 - INFO - PIPELINE SUMMARY
+2025-12-07 16:46:59,037 - INFO - ============================================================
+2025-12-07 16:46:59,037 - INFO - Completed: 2/4 steps
+2025-12-07 16:46:59,037 - ERROR - Failed at: Analyze Narratives
+2025-12-07 16:46:59,037 - INFO - Check logs/pipeline.log for details
