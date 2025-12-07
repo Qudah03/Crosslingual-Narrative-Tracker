@@ -1,0 +1,14 @@
+﻿# .gitignore content - adjust names as needed
+.vscode/
+.venv/
+.venv311/
+data/
+data/raw/
+data/processed/
+embeddings/
+*.parquet
+*.jsonl
+*.json
+*.npy
+*.npz
+*.bin
