@@ -1,0 +1,374 @@
+2025-12-07 14:10:16,550 - INFO - Found 4 JSON files: ['data/raw\\aljazeera_ar.json', 'data/raw\\bbc.json', 'data/raw\\dw.json', 'data/raw\\lemonde.json']
+2025-12-07 14:10:16,550 - INFO - Loading articles...
+2025-12-07 14:10:16,575 - INFO - Loaded 25 articles from data/raw\aljazeera_ar.json
+2025-12-07 14:10:16,586 - INFO - Loaded 58 articles from data/raw\bbc.json
+2025-12-07 14:10:16,596 - INFO - Loaded 208 articles from data/raw\dw.json
+2025-12-07 14:10:16,597 - INFO - Loaded 208 articles from data/raw\lemonde.json
+2025-12-07 14:10:16,608 - INFO - Encoding 208 articles with intfloat/multilingual-e5-large...
+2025-12-07 14:10:16,609 - INFO - Use pytorch device_name: cpu
+2025-12-07 14:10:16,609 - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-12-07 14:10:33,469 - INFO - Saved embeddings to data/processed/embeddings.parquet
+2025-12-07 14:10:39,605 - INFO - Loading embeddings from data/processed/embeddings.parquet...
+2025-12-07 14:10:40,306 - INFO - Loaded 208 articles with embeddings.
+2025-12-07 14:10:40,308 - INFO - Embedding shape: (208, 1024)
+2025-12-07 14:10:40,308 - INFO - Starting dimensionality reduction with UMAP...
+2025-12-07 14:10:47,700 - INFO - Dimensionality reduction completed.
+2025-12-07 14:10:47,700 - INFO - Starting clustering with HDBSCAN...
+2025-12-07 14:10:47,765 - INFO - Saved clustered articles to data/processed/clustered_articles.parquet
+2025-12-07 14:10:47,765 - INFO - Identified 2 clusters.
+2025-12-07 14:10:47,765 - INFO - Cluster size distribution:
+2025-12-07 14:10:47,769 - INFO - cluster
+1    182
+0     26
+2025-12-07 14:15:15,415 - INFO - 
+============================================================
+2025-12-07 14:15:15,415 - INFO - CROSSLINGUAL NARRATIVE TRACKER - ML PIPELINE
+2025-12-07 14:15:15,415 - INFO - Started at: 2025-12-07 14:15:15
+2025-12-07 14:15:15,415 - INFO - ============================================================
+
+2025-12-07 14:15:15,416 - INFO - ============================================================
+2025-12-07 14:15:15,416 - INFO - Step 1: Generate Embeddings
+2025-12-07 14:15:15,416 - INFO - ============================================================
+2025-12-07 14:15:19,704 - INFO - Found 4 JSON files: ['data/raw\\aljazeera_ar.json', 'data/raw\\bbc.json', 'data/raw\\dw.json', 'data/raw\\lemonde.json']
+2025-12-07 14:15:19,705 - INFO - Loading articles...
+2025-12-07 14:15:19,705 - INFO - Loaded 25 articles from data/raw\aljazeera_ar.json
+2025-12-07 14:15:19,705 - INFO - Loaded 58 articles from data/raw\bbc.json
+2025-12-07 14:15:19,706 - INFO - Loaded 208 articles from data/raw\dw.json
+2025-12-07 14:15:19,706 - INFO - Loaded 208 articles from data/raw\lemonde.json
+2025-12-07 14:15:19,708 - INFO - Encoding 208 articles with intfloat/multilingual-e5-large...
+2025-12-07 14:15:19,709 - INFO - Use pytorch device_name: cpu
+2025-12-07 14:15:19,709 - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-12-07 14:15:30,957 - INFO - Saved embeddings to data/processed/embeddings.parquet
+2025-12-07 14:15:31,814 - INFO - ============================================================
+2025-12-07 14:15:31,814 - INFO - Step 2: Cluster Articles
+2025-12-07 14:15:31,814 - INFO - ============================================================
+2025-12-07 14:15:36,531 - INFO - Loading embeddings from data/processed/embeddings.parquet...
+2025-12-07 14:15:36,648 - INFO - Loaded 208 articles with embeddings.
+2025-12-07 14:15:36,650 - INFO - Embedding shape: (208, 1024)
+2025-12-07 14:15:36,650 - INFO - Starting dimensionality reduction with UMAP...
+2025-12-07 14:15:43,779 - INFO - Dimensionality reduction completed.
+2025-12-07 14:15:43,779 - INFO - Starting clustering with HDBSCAN...
+2025-12-07 14:15:43,815 - INFO - Saved clustered articles to data/processed/clustered_articles.parquet
+2025-12-07 14:15:43,815 - INFO - Identified 2 clusters.
+2025-12-07 14:15:43,815 - INFO - Cluster size distribution:
+2025-12-07 14:15:43,816 - INFO - cluster
+1    182
+0     26
+2025-12-07 14:15:44,232 - INFO - ============================================================
+2025-12-07 14:15:44,232 - INFO - Step 3: Analyze Narratives
+2025-12-07 14:15:44,232 - INFO - ============================================================
+2025-12-07 14:15:48,653 - INFO - Loading articles from data/processed/clustered_articles.parquet...
+2025-12-07 14:15:48,701 - INFO - Loading embedding model: intfloat/multilingual-e5-large
+2025-12-07 14:15:48,703 - INFO - Use pytorch device_name: cpu
+2025-12-07 14:15:48,703 - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-12-07 14:15:52,076 - INFO - Extracting narrative features...
+2025-12-07 14:15:52,088 - ERROR - Error extracting narrative features: cannot convert float NaN to integer
+Traceback (most recent call last):
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\pipeline\narrative_analyzer.py", line 74, in extract_narrative_features
+    df[f"narrative_{narrative}"] = text.str.contains("|".join(keywords), regex=True).astype(int)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\generic.py", line 6665, in astype
+    new_data = self._mgr.astype(dtype=dtype, copy=copy, errors=errors)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\managers.py", line 449, in astype
+    return self.apply(
+           ^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\managers.py", line 363, in apply
+    applied = getattr(b, f)(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\blocks.py", line 784, in astype
+    new_values = astype_array_safe(values, dtype, copy=copy, errors=errors)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 237, in astype_array_safe
+    new_values = astype_array(values, dtype, copy=copy)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 182, in astype_array
+    values = _astype_nansafe(values, dtype, copy=copy)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 133, in _astype_nansafe
+    return arr.astype(dtype, copy=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: cannot convert float NaN to integer
+2025-12-07 14:15:52,192 - ERROR - Error in narrative analysis: cannot convert float NaN to integer
+Traceback (most recent call last):
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\pipeline\narrative_analyzer.py", line 224, in main
+    df = analyzer.extract_narrative_features(df)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\pipeline\narrative_analyzer.py", line 74, in extract_narrative_features
+    df[f"narrative_{narrative}"] = text.str.contains("|".join(keywords), regex=True).astype(int)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\generic.py", line 6665, in astype
+    new_data = self._mgr.astype(dtype=dtype, copy=copy, errors=errors)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\managers.py", line 449, in astype
+    return self.apply(
+           ^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\managers.py", line 363, in apply
+    applied = getattr(b, f)(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\blocks.py", line 784, in astype
+    new_values = astype_array_safe(values, dtype, copy=copy, errors=errors)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 237, in astype_array_safe
+    new_values = astype_array(values, dtype, copy=copy)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 182, in astype_array
+    values = _astype_nansafe(values, dtype, copy=copy)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 133, in _astype_nansafe
+    return arr.astype(dtype, copy=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: cannot convert float NaN to integer
+2025-12-07 14:15:52,908 - ERROR - Pipeline halted at Step 3
+2025-12-07 14:15:52,908 - INFO - ============================================================
+2025-12-07 14:15:52,908 - INFO - PIPELINE SUMMARY
+2025-12-07 14:15:52,908 - INFO - ============================================================
+2025-12-07 14:15:52,909 - INFO - Completed: 2/4 steps
+2025-12-07 14:15:52,909 - ERROR - Failed at: Analyze Narratives
+2025-12-07 14:15:52,909 - INFO - Check logs/pipeline.log for details
+2025-12-07 14:34:36,948 - INFO - 
+============================================================
+2025-12-07 14:34:36,949 - INFO - CROSSLINGUAL NARRATIVE TRACKER - ML PIPELINE
+2025-12-07 14:34:36,949 - INFO - Started at: 2025-12-07 14:34:36
+2025-12-07 14:34:36,949 - INFO - ============================================================
+
+2025-12-07 14:34:36,949 - INFO - ============================================================
+2025-12-07 14:34:36,949 - INFO - Step 1: Generate Embeddings
+2025-12-07 14:34:36,950 - INFO - ============================================================
+2025-12-07 14:34:41,170 - INFO - Found 4 JSON files: ['data/raw\\aljazeera_ar.json', 'data/raw\\bbc.json', 'data/raw\\dw.json', 'data/raw\\lemonde.json']
+2025-12-07 14:34:41,170 - INFO - Loading articles...
+2025-12-07 14:34:41,170 - INFO - Loaded 25 articles from data/raw\aljazeera_ar.json
+2025-12-07 14:34:41,171 - INFO - Loaded 58 articles from data/raw\bbc.json
+2025-12-07 14:34:41,171 - INFO - Loaded 208 articles from data/raw\dw.json
+2025-12-07 14:34:41,171 - INFO - Loaded 208 articles from data/raw\lemonde.json
+2025-12-07 14:34:41,174 - INFO - Encoding 208 articles with intfloat/multilingual-e5-large...
+2025-12-07 14:34:41,175 - INFO - Use pytorch device_name: cpu
+2025-12-07 14:34:41,175 - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-12-07 14:34:52,767 - INFO - Saved embeddings to data/processed/embeddings.parquet
+2025-12-07 14:34:53,532 - INFO - ============================================================
+2025-12-07 14:34:53,532 - INFO - Step 2: Cluster Articles
+2025-12-07 14:34:53,532 - INFO - ============================================================
+2025-12-07 14:34:58,139 - INFO - Loading embeddings from data/processed/embeddings.parquet...
+2025-12-07 14:34:58,248 - INFO - Loaded 208 articles with embeddings.
+2025-12-07 14:34:58,250 - INFO - Embedding shape: (208, 1024)
+2025-12-07 14:34:58,250 - INFO - Starting dimensionality reduction with UMAP...
+2025-12-07 14:35:04,745 - INFO - Dimensionality reduction completed.
+2025-12-07 14:35:04,745 - INFO - Starting clustering with HDBSCAN...
+2025-12-07 14:35:04,780 - INFO - Saved clustered articles to data/processed/clustered_articles.parquet
+2025-12-07 14:35:04,780 - INFO - Identified 2 clusters.
+2025-12-07 14:35:04,780 - INFO - Cluster size distribution:
+2025-12-07 14:35:04,781 - INFO - cluster
+1    182
+0     26
+2025-12-07 14:35:05,167 - INFO - ============================================================
+2025-12-07 14:35:05,167 - INFO - Step 3: Analyze Narratives
+2025-12-07 14:35:05,167 - INFO - ============================================================
+2025-12-07 14:35:09,244 - INFO - Loading articles from data/processed/clustered_articles.parquet...
+2025-12-07 14:35:09,300 - INFO - Loading embedding model: intfloat/multilingual-e5-large
+2025-12-07 14:35:09,301 - INFO - Use pytorch device_name: cpu
+2025-12-07 14:35:09,302 - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-12-07 14:35:12,528 - INFO - Extracting narrative features...
+2025-12-07 14:35:12,533 - ERROR - Error extracting narrative features: cannot convert float NaN to integer
+Traceback (most recent call last):
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\pipeline\narrative_analyzer.py", line 74, in extract_narrative_features
+    df[f"narrative_{narrative}"] = text.str.contains("|".join(keywords), regex=True).astype(int)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\generic.py", line 6665, in astype
+    new_data = self._mgr.astype(dtype=dtype, copy=copy, errors=errors)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\managers.py", line 449, in astype
+    return self.apply(
+           ^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\managers.py", line 363, in apply
+    applied = getattr(b, f)(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\blocks.py", line 784, in astype
+    new_values = astype_array_safe(values, dtype, copy=copy, errors=errors)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 237, in astype_array_safe
+    new_values = astype_array(values, dtype, copy=copy)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 182, in astype_array
+    values = _astype_nansafe(values, dtype, copy=copy)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 133, in _astype_nansafe
+    return arr.astype(dtype, copy=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: cannot convert float NaN to integer
+2025-12-07 14:35:12,536 - ERROR - Error in narrative analysis: cannot convert float NaN to integer
+Traceback (most recent call last):
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\pipeline\narrative_analyzer.py", line 224, in main
+    df = analyzer.extract_narrative_features(df)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\pipeline\narrative_analyzer.py", line 74, in extract_narrative_features
+    df[f"narrative_{narrative}"] = text.str.contains("|".join(keywords), regex=True).astype(int)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\generic.py", line 6665, in astype
+    new_data = self._mgr.astype(dtype=dtype, copy=copy, errors=errors)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\managers.py", line 449, in astype
+    return self.apply(
+           ^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\managers.py", line 363, in apply
+    applied = getattr(b, f)(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\internals\blocks.py", line 784, in astype
+    new_values = astype_array_safe(values, dtype, copy=copy, errors=errors)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 237, in astype_array_safe
+    new_values = astype_array(values, dtype, copy=copy)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 182, in astype_array
+    values = _astype_nansafe(values, dtype, copy=copy)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LOQ\Desktop\SideProject\Crosslingual-Narrative-Tracker\.venv311\Lib\site-packages\pandas\core\dtypes\astype.py", line 133, in _astype_nansafe
+    return arr.astype(dtype, copy=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: cannot convert float NaN to integer
+2025-12-07 14:35:13,225 - ERROR - Pipeline halted at Step 3
+2025-12-07 14:35:13,225 - INFO - ============================================================
+2025-12-07 14:35:13,225 - INFO - PIPELINE SUMMARY
+2025-12-07 14:35:13,225 - INFO - ============================================================
+2025-12-07 14:35:13,225 - INFO - Completed: 2/4 steps
+2025-12-07 14:35:13,225 - ERROR - Failed at: Analyze Narratives
+2025-12-07 14:35:13,225 - INFO - Check logs/pipeline.log for details
+2025-12-07 14:50:21,626 - INFO - 
+============================================================
+2025-12-07 14:50:21,627 - INFO - CROSSLINGUAL NARRATIVE TRACKER - ML PIPELINE
+2025-12-07 14:50:21,627 - INFO - Started at: 2025-12-07 14:50:21
+2025-12-07 14:50:21,627 - INFO - ============================================================
+
+2025-12-07 14:50:21,627 - INFO - ============================================================
+2025-12-07 14:50:21,627 - INFO - Step 1: Generate Embeddings
+2025-12-07 14:50:21,627 - INFO - ============================================================
+2025-12-07 14:50:25,718 - INFO - Found 4 JSON files: ['data/raw\\aljazeera_ar.json', 'data/raw\\bbc.json', 'data/raw\\dw.json', 'data/raw\\lemonde.json']
+2025-12-07 14:50:25,718 - INFO - Loading articles...
+2025-12-07 14:50:25,718 - INFO - Loaded 25 articles from data/raw\aljazeera_ar.json
+2025-12-07 14:50:25,719 - INFO - Loaded 58 articles from data/raw\bbc.json
+2025-12-07 14:50:25,719 - INFO - Loaded 208 articles from data/raw\dw.json
+2025-12-07 14:50:25,719 - INFO - Loaded 208 articles from data/raw\lemonde.json
+2025-12-07 14:50:25,722 - INFO - Encoding 208 articles with intfloat/multilingual-e5-large...
+2025-12-07 14:50:25,723 - INFO - Use pytorch device_name: cpu
+2025-12-07 14:50:25,723 - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-12-07 14:50:37,059 - INFO - Saved embeddings to data/processed/embeddings.parquet
+2025-12-07 14:50:37,864 - INFO - ============================================================
+2025-12-07 14:50:37,864 - INFO - Step 2: Cluster Articles
+2025-12-07 14:50:37,864 - INFO - ============================================================
+2025-12-07 14:50:42,525 - INFO - Loading embeddings from data/processed/embeddings.parquet...
+2025-12-07 14:50:42,645 - INFO - Loaded 208 articles with embeddings.
+2025-12-07 14:50:42,647 - INFO - Embedding shape: (208, 1024)
+2025-12-07 14:50:42,647 - INFO - Starting dimensionality reduction with UMAP...
+2025-12-07 14:50:49,219 - INFO - Dimensionality reduction completed.
+2025-12-07 14:50:49,219 - INFO - Starting clustering with HDBSCAN...
+2025-12-07 14:50:49,254 - INFO - Saved clustered articles to data/processed/clustered_articles.parquet
+2025-12-07 14:50:49,255 - INFO - Identified 2 clusters.
+2025-12-07 14:50:49,255 - INFO - Cluster size distribution:
+2025-12-07 14:50:49,256 - INFO - cluster
+1    182
+0     26
+2025-12-07 14:50:49,642 - INFO - ============================================================
+2025-12-07 14:50:49,642 - INFO - Step 3: Analyze Narratives
+2025-12-07 14:50:49,642 - INFO - ============================================================
+2025-12-07 14:50:53,771 - INFO - Loading articles from data/processed/clustered_articles.parquet...
+2025-12-07 14:50:53,814 - INFO - Loading embedding model: intfloat/multilingual-e5-large
+2025-12-07 14:50:53,815 - INFO - Use pytorch device_name: cpu
+2025-12-07 14:50:53,815 - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-12-07 14:50:56,908 - INFO - Extracting narrative features...
+2025-12-07 14:50:56,917 - INFO - Narrative features extracted successfully
+2025-12-07 14:50:56,918 - INFO - Grouping articles by topic similarity (threshold=0.75)...
+2025-12-07 14:50:56,968 - INFO - Found 8 distinct topics
+2025-12-07 14:50:56,969 - INFO - Detecting narrative patterns...
+2025-12-07 14:50:56,977 - INFO - Narrative patterns detected
+2025-12-07 14:50:56,977 - INFO - Top narratives: {'conflict': 9, 'politics': 3, 'economy': 6, 'environment': 10, 'health': 3, 'technology': 29}
+2025-12-07 14:50:56,977 - INFO - Language coverage: {'en': 33, 'ar': 25}
+2025-12-07 14:50:56,978 - INFO - Source distribution: {'BBC': 33, 'AlJazeera_AR': 25}
+2025-12-07 14:50:57,023 - INFO - Saved narrative analysis to data/processed/narrative_analysis.parquet
+2025-12-07 14:50:57,742 - INFO - ============================================================
+2025-12-07 14:50:57,742 - INFO - Step 4: Visualize Results
+2025-12-07 14:50:57,742 - INFO - ============================================================
+2025-12-07 14:51:26,895 - INFO - ============================================================
+2025-12-07 14:51:26,895 - INFO - PIPELINE SUMMARY
+2025-12-07 14:51:26,895 - INFO - ============================================================
+2025-12-07 14:51:26,895 - INFO - Completed: 4/4 steps
+2025-12-07 14:51:26,896 - INFO - Ended at: 2025-12-07 14:51:26
+2025-12-07 14:51:26,896 - INFO - 
+Output files:
+2025-12-07 14:51:26,896 - INFO -   - data/processed/embeddings.parquet
+2025-12-07 14:51:26,897 - INFO -   - data/processed/clustered_articles.parquet
+2025-12-07 14:51:26,897 - INFO -   - data/processed/narrative_analysis.parquet
+2025-12-07 14:51:26,897 - INFO - 
+Next: Run 'streamlit run dashboard/app.py' to view results
+2025-12-07 16:05:20,482 - INFO - 
+============================================================
+2025-12-07 16:05:20,482 - INFO - CROSSLINGUAL NARRATIVE TRACKER - ML PIPELINE
+2025-12-07 16:05:20,482 - INFO - Started at: 2025-12-07 16:05:20
+2025-12-07 16:05:20,483 - INFO - ============================================================
+
+2025-12-07 16:05:20,483 - INFO - ============================================================
+2025-12-07 16:05:20,483 - INFO - Step 1: Generate Embeddings
+2025-12-07 16:05:20,483 - INFO - ============================================================
+2025-12-07 16:05:25,389 - INFO - Found 4 JSON files: ['data/raw\\aljazeera_ar.json', 'data/raw\\bbc.json', 'data/raw\\dw.json', 'data/raw\\lemonde.json']
+2025-12-07 16:05:25,390 - INFO - Loading articles...
+2025-12-07 16:05:25,469 - INFO - Loaded 25 articles from data/raw\aljazeera_ar.json
+2025-12-07 16:05:25,512 - INFO - Loaded 58 articles from data/raw\bbc.json
+2025-12-07 16:05:25,550 - INFO - Loaded 208 articles from data/raw\dw.json
+2025-12-07 16:05:25,551 - INFO - Loaded 208 articles from data/raw\lemonde.json
+2025-12-07 16:05:25,555 - INFO - Encoding 208 articles with intfloat/multilingual-e5-large...
+2025-12-07 16:05:25,557 - INFO - Use pytorch device_name: cpu
+2025-12-07 16:05:25,557 - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-12-07 16:05:50,138 - INFO - Saved embeddings to data/processed/embeddings.parquet
+2025-12-07 16:05:51,748 - INFO - [OK] Step 1 completed successfully
+
+2025-12-07 16:05:51,748 - INFO - ============================================================
+2025-12-07 16:05:51,749 - INFO - Step 2: Cluster Articles
+2025-12-07 16:05:51,749 - INFO - ============================================================
+2025-12-07 16:06:00,858 - INFO - Loading embeddings from data/processed/embeddings.parquet...
+2025-12-07 16:06:01,142 - INFO - Loaded 208 articles with embeddings.
+2025-12-07 16:06:01,146 - INFO - Embedding shape: (208, 1024)
+2025-12-07 16:06:01,146 - INFO - Starting dimensionality reduction with UMAP...
+2025-12-07 16:06:08,742 - INFO - Dimensionality reduction completed.
+2025-12-07 16:06:08,743 - INFO - Starting clustering with HDBSCAN...
+2025-12-07 16:06:08,815 - INFO - Saved clustered articles to data/processed/clustered_articles.parquet
+2025-12-07 16:06:08,815 - INFO - Identified 2 clusters.
+2025-12-07 16:06:08,815 - INFO - Cluster size distribution:
+2025-12-07 16:06:08,816 - INFO - cluster
+1    182
+0     26
+2025-12-07 16:06:09,205 - INFO - [OK] Step 2 completed successfully
+
+2025-12-07 16:06:09,205 - INFO - ============================================================
+2025-12-07 16:06:09,206 - INFO - Step 3: Analyze Narratives
+2025-12-07 16:06:09,206 - INFO - ============================================================
+2025-12-07 16:06:13,668 - INFO - Loading articles from data/processed/clustered_articles.parquet...
+2025-12-07 16:06:13,712 - INFO - Loading embedding model: intfloat/multilingual-e5-large
+2025-12-07 16:06:13,713 - INFO - Use pytorch device_name: cpu
+2025-12-07 16:06:13,713 - INFO - Load pretrained SentenceTransformer: intfloat/multilingual-e5-large
+2025-12-07 16:06:17,011 - INFO - Extracting narrative features...
+2025-12-07 16:06:17,018 - INFO - Narrative features extracted successfully
+2025-12-07 16:06:17,019 - INFO - Grouping articles by topic similarity (threshold=0.75)...
+2025-12-07 16:06:17,067 - INFO - Found 8 distinct topics
+2025-12-07 16:06:17,067 - INFO - Detecting narrative patterns...
+2025-12-07 16:06:17,071 - INFO - Narrative patterns detected
+2025-12-07 16:06:17,072 - INFO - Top narratives: {'conflict': 12, 'politics': 5, 'economy': 7, 'environment': 10, 'health': 3, 'technology': 33}
+2025-12-07 16:06:17,072 - INFO - Language coverage: {'en': 33, 'ar': 25}
+2025-12-07 16:06:17,072 - INFO - Source distribution: {'unknown': 150, 'BBC': 33, 'AlJazeera_AR': 25}
+2025-12-07 16:06:17,170 - INFO - Saved narrative analysis to data/processed/narrative_analysis.parquet
+2025-12-07 16:06:17,873 - INFO - [OK] Step 3 completed successfully
+
+2025-12-07 16:06:17,873 - INFO - ============================================================
+2025-12-07 16:06:17,873 - INFO - Step 4: Visualize Results
+2025-12-07 16:06:17,873 - INFO - ============================================================
+2025-12-07 16:06:43,030 - INFO - [OK] Step 4 completed successfully
+
+2025-12-07 16:06:43,030 - INFO - ============================================================
+2025-12-07 16:06:43,030 - INFO - PIPELINE SUMMARY
+2025-12-07 16:06:43,030 - INFO - ============================================================
+2025-12-07 16:06:43,030 - INFO - Completed: 4/4 steps
+2025-12-07 16:06:43,035 - INFO - Ended at: 2025-12-07 16:06:43
+2025-12-07 16:06:43,035 - INFO - 
+Output files:
+2025-12-07 16:06:43,035 - INFO -   - data/processed/embeddings.parquet
+2025-12-07 16:06:43,035 - INFO -   - data/processed/clustered_articles.parquet
+2025-12-07 16:06:43,035 - INFO -   - data/processed/narrative_analysis.parquet
+2025-12-07 16:06:43,035 - INFO - 
+Next: Run 'streamlit run dashboard/app.py' to view results
