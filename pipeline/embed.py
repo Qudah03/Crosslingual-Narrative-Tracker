@@ -1,6 +1,6 @@
 # pipeline/embed.py
-from sentence_transformers import SentenceTransformer
-import pandas as pd
+from sentence_transformers import SentenceTransformer # pyright: ignore[reportMissingImports]
+import pandas as pd # pyright: ignore[reportMissingModuleSource]
 import json
 import os
 import glob
@@ -44,10 +44,13 @@ def main(output_file="data/processed/embeddings.parquet"):
     model = SentenceTransformer(MODEL_NAME)
     embeddings = model.encode(df["text"].tolist(), normalize_embeddings=True, show_progress_bar=True)
 
-    df["embedding"] = list(map(lambda x: x.tolist(), embeddings))
+    df["embedding"] = [x.tolist() for x in embeddings]
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
     df.to_parquet(output_file, index=False)
     print(f"Saved embeddings to {output_file}")
 
 if __name__ == "__main__":
     main()
+
+# to run this script, use the command:
+# python pipeline/embed.py

@@ -1,9 +1,8 @@
-import pandas as pd
-import numpy as np
-import hdbscan
+import pandas as pd # pyright: ignore[reportMissingModuleSource]
+import numpy as np # type: ignore
+import hdbscan # pyright: ignore[reportMissingImports]
 import os
-import umap
-from sklearn.cluster import KMeans
+import umap # pyright: ignore[reportMissingImports]
 
 
 EMBEDDINGS_FILE = "data/processed/embeddings.parquet"
@@ -24,13 +23,6 @@ reducer = umap.UMAP(
 )
 X_reduced = reducer.fit_transform(X)
 print("Dimensionality reduction completed.")
-
-
-# # e.g., 10 clusters
-# clusterer = KMeans(n_clusters=10, random_state=42)
-# labels = clusterer.fit_predict(X_reduced)
-# df["cluster"] = labels
-
 
 clusterer = hdbscan.HDBSCAN(
     min_cluster_size=5,  # minimum articles per cluster
