@@ -12,3 +12,77 @@ embeddings/
 *.npy
 *.npz
 *.bin
+-----------------
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+env/
+venv/
+.venv/
+.venv311/
+.Python
+build/
+dist/
+.eggs/
+
+# Virtual environments
+.env
+.venv
+.venv*/
+
+# VS Code
+.vscode/
+
+# Data / large files
+data/
+data/raw/
+data/processed/
+*.parquet
+*.feather
+*.npz
+*.npy
+embeddings/
+embeddings/*
+*.bin
+*.ckpt
+*.pt
+
+# Scrapy output / spiders data
+*.jsonl
+*.json
+*_headlines.json
+aljazeera_ar_headlines.json
+bbc_headlines.json
+dw_headlines.json
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Coverage
+htmlcov/
+.coverage
+
+# Packages
+*.egg-info/
+pip-wheel-metadata/
+
+# Secrets/keys if any
+*.env
+secrets.json
+
+# Ignore logs folder
+Crosslingual-Narrative-Tracker/logs/

@@ -10,7 +10,9 @@ class LeMondeSpider(scrapy.Spider):
             yield {
                 "title": item.css("title::text").get(),
                 "link": item.css("link::text").get(),
-                "pubDate": item.css("pubDate::text").get()
+                "pubDate": item.css("pubDate::text").get(),
+                "language": "fr",
+                "source": "Le Monde"
             }
 # To run this spider, use the command:
 # scrapy runspider scraper/news_spiders/le_monde_spider.py -o le_m

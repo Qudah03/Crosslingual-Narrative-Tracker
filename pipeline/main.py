@@ -1,6 +1,6 @@
 """
 Master Pipeline: Automated ML Workflow
-Orchestrates: Embed → Cluster → Analyze Narratives → Visualize
+Orchestrates: Scrape → Embed → Cluster → Analyze Narratives → Visualize
 """
 
 import os
@@ -27,6 +27,7 @@ def run_step(step_num: int, step_name: str, script_path: str) -> bool:
         logger.info(f"Step {step_num}: {step_name}")
         logger.info(f"{'='*60}")
         
+        # Execute the script using the current Python interpreter
         result = subprocess.run(
             [sys.executable, script_path],
             check=True,
@@ -36,10 +37,10 @@ def run_step(step_num: int, step_name: str, script_path: str) -> bool:
         return True
     
     except subprocess.CalledProcessError as e:
-        logger.error(f"✗ Step {step_num} failed with exit code {e.returncode}")
+        logger.error(f"[FAILED] Step {step_num} failed with exit code {e.returncode}")
         return False
     except Exception as e:
-        logger.error(f"✗ Step {step_num} error: {e}")
+        logger.error(f"[ERROR] Step {step_num} error: {e}")
         return False
 
 
@@ -54,11 +55,13 @@ def main():
     logger.info(f"Started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     logger.info("="*60 + "\n")
     
+    # --- UPDATED STEPS LIST ---
     steps = [
-        (1, "Generate Embeddings", "pipeline/embed.py"),
-        (2, "Cluster Articles", "pipeline/cluster.py"),
-        (3, "Analyze Narratives", "pipeline/narrative_analyzer.py"),
-        (4, "Visualize Results", "pipeline/visualize_clusters.py"),
+        (1, "Scrape Data", "scraper/main.py"),  
+        (2, "Generate Embeddings", "pipeline/embed.py"),
+        (3, "Cluster Articles", "pipeline/cluster.py"),
+        (4, "Analyze Narratives", "pipeline/narrative_analyzer.py"),
+        (5, "Visualize Results", "pipeline/visualize_clusters.py"),
     ]
     
     completed = 0
@@ -90,9 +93,10 @@ def main():
         logger.info("Check logs/pipeline.log for details")
         return False
     else:
-        logger.info("✓ All steps completed successfully!")
+        logger.info("[SUCCESS] All steps completed successfully!")
         logger.info(f"Ended at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        logger.info("\nOutput files:")
+        logger.info("\nOutput files generated:")
+        logger.info("  - data/raw/all_headlines.json")
         logger.info("  - data/processed/embeddings.parquet")
         logger.info("  - data/processed/clustered_articles.parquet")
         logger.info("  - data/processed/narrative_analysis.parquet")

@@ -12,6 +12,8 @@ class DWSpider(scrapy.Spider):
                 'link': item.xpath('*[local-name()="link"]/text()').get(),
                 'pubDate': item.xpath('*[local-name()="pubDate"]/text()').get(),
                 'description': item.xpath('*[local-name()="description"]/text()').get(),
+                "language": "en",   # or 'de' if scraping German
+                "source": "DW"
             }
 
 # To run this spider, use the command:

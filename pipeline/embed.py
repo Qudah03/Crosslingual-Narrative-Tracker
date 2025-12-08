@@ -1,80 +1,80 @@
-# pipeline/embed.py
-from sentence_transformers import SentenceTransformer # pyright: ignore[reportMissingImports]
-import pandas as pd # pyright: ignore[reportMissingModuleSource]
+from sentence_transformers import SentenceTransformer
+import pandas as pd
 import json
 import logging
 import os
 import sys
 import glob
+import numpy as np
 
 MODEL_NAME = "intfloat/multilingual-e5-large"
+PROCESSED_FILE = "data/processed/embeddings.parquet"
 
-# Configure logging BEFORE any functions
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('logs/pipeline.log'),
-        logging.StreamHandler()
-    ]
-)
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-def load_articles(paths):
-    """Load articles from JSON files."""
-    articles = []
-    if not paths:
-        logger.warning("No JSON files found in data/raw/")
-        return pd.DataFrame()
-    
-    for path in paths:
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                content = f.read().strip()
-                if not content:
-                    logger.warning(f"File {path} is empty, skipping.")
-                    continue
-                if content.startswith("["):  # full JSON array
-                    arr = json.loads(content)
-                    articles.extend(arr)
-                else:  # JSON lines
-                    for line in content.splitlines():
-                        if line.strip():
-                            articles.append(json.loads(line))
-            logger.info(f"Loaded {len(articles)} articles from {path}")
-        except json.JSONDecodeError as e:
-            logger.error(f"JSON decode error in {path}: {e}")
-        except IOError as e:
-            logger.error(f"Failed to read {path}: {e}")
-    
-    return pd.DataFrame(articles)
-
 def build_text(row):
-    title = row.get("title", "")
-    summary = row.get("summary", "")
-    return (title + " — " + summary).strip()
+    return (row.get("title", "") + " — " + row.get("summary", "")).strip()
 
-def main(output_file="data/processed/embeddings.parquet"):
+def main():
     try:
-        # Automatically find all JSON files in data/raw
+        # 1. Load NEW Raw Data
         input_files = glob.glob("data/raw/*.json")
-        logger.info(f"Found {len(input_files)} JSON files: {input_files}")
+        new_df = pd.DataFrame()
+        for path in input_files:
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        new_df = pd.concat([new_df, pd.DataFrame(data)])
+            except Exception as e:
+                logger.error(f"Error reading {path}: {e}")
 
-        logger.info("Loading articles...")
-        df = load_articles(input_files)
-        if df.empty:
-            logger.error("No articles found! Check data/raw/ directory.")
-            return False
+        if new_df.empty:
+            logger.warning("No new raw data found.")
+            return True
 
-        df["text"] = df.apply(build_text, axis=1)
-        logger.info(f"Encoding {len(df)} articles with {MODEL_NAME}...")
-        model = SentenceTransformer(MODEL_NAME)
-        embeddings = model.encode(df["text"].tolist(), normalize_embeddings=True, show_progress_bar=True)
+        # Ensure 'link' column exists for deduplication
+        if 'link' not in new_df.columns:
+            new_df['link'] = new_df['title'] # Fallback if no link
 
-        df["embedding"] = [x.tolist() for x in embeddings]
-        os.makedirs(os.path.dirname(output_file), exist_ok=True)
-        df.to_parquet(output_file, index=False)
-        logger.info(f"Saved embeddings to {output_file}")
+        # 2. Load OLD Processed Data (History)
+        if os.path.exists(PROCESSED_FILE):
+            logger.info(f"Loading existing history from {PROCESSED_FILE}...")
+            history_df = pd.read_parquet(PROCESSED_FILE)
+            
+            # Find strictly NEW articles (compare links)
+            existing_links = set(history_df['link'].unique())
+            new_df = new_df[~new_df['link'].isin(existing_links)]
+            
+            logger.info(f"Found {len(new_df)} new articles to process.")
+        else:
+            logger.info("No history found. Starting fresh.")
+            history_df = pd.DataFrame()
+
+        # 3. Embed ONLY the New Stuff (Saves compute time)
+        if not new_df.empty:
+            new_df["text"] = new_df.apply(build_text, axis=1)
+            
+            logger.info(f"Encoding {len(new_df)} new articles...")
+            model = SentenceTransformer(MODEL_NAME)
+            embeddings = model.encode(new_df["text"].tolist(), normalize_embeddings=True, show_progress_bar=True)
+            
+            new_df["embedding"] = [x.tolist() for x in embeddings]
+            
+            # 4. Merge and Save
+            combined_df = pd.concat([history_df, new_df], ignore_index=True)
+            
+            # Clean up duplicates just in case
+            combined_df = combined_df.drop_duplicates(subset=['link'], keep='last')
+            
+            os.makedirs(os.path.dirname(PROCESSED_FILE), exist_ok=True)
+            combined_df.to_parquet(PROCESSED_FILE, index=False)
+            logger.info(f"✅ Saved updated dataset with {len(combined_df)} total articles.")
+        else:
+            logger.info("No new unique articles to add.")
+
         return True
     
     except Exception as e:
@@ -82,8 +82,4 @@ def main(output_file="data/processed/embeddings.parquet"):
         return False
 
 if __name__ == "__main__":
-    success = main()
-    sys.exit(0 if success else 1)
-
-# to run this script, use the command:
-# python pipeline/embed.py
+    sys.exit(0 if main() else 1)

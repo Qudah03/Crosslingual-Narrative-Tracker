@@ -10,8 +10,16 @@ import pandas as pd
 import numpy as np
 import logging
 import sys
+import os
+
+# --- FIX: Add project root to path so we can import 'pipeline' ---
+# This allows the script to see the 'pipeline' folder even when running inside it
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# ------------------------------------------------------------------
+
 from typing import Dict, List
 from sentence_transformers import SentenceTransformer
+from pipeline.llm_summarizer import LocalSummarizer
 
 # --------------------------
 # Configure logging
@@ -67,6 +75,24 @@ class NarrativeAnalyzer:
             logger.info(f"Loading embedding model: {model_name}")
             self.model = SentenceTransformer(model_name)
             self.model_name = model_name
+            
+            # --- FIX: Define source_map inside the class instance ---
+            self.source_map = {
+                "BBC": "neutral",
+                "Reuters": "neutral",
+                "AP": "neutral",
+                "Al Jazeera": "neutral",
+                "DW": "neutral",
+                "Le Monde": "neutral",
+                "NYT": "neutral",
+                "CNN": "neutral",
+                "The Guardian": "neutral",
+                "Fox News": "biased_right",
+                "Breitbart": "biased_right",
+                "RT": "biased_left"
+            }
+            # ---------------------------------------------------------
+            
         except Exception as e:
             logger.error(f"Failed to load model: {e}")
             raise
@@ -113,6 +139,35 @@ class NarrativeAnalyzer:
             logger.error(f"Error extracting narrative features: {e}")
             raise
 
+    def generate_smart_labels(self, df):
+        """
+        Generates LLM summaries for each cluster.
+        """
+        from pipeline.llm_summarizer import LocalSummarizer
+        
+        logger.info("Initializing Local LLM (Phi-3) on RTX 4050...")
+        llm = LocalSummarizer()
+        
+        # Create a map: {cluster_id: "Summary text"}
+        cluster_summaries = {}
+        unique_clusters = df['cluster'].unique()
+        
+        for cluster_id in unique_clusters:
+            if cluster_id == -1:
+                cluster_summaries[cluster_id] = "Noise / Outliers"
+                continue
+                
+            # Get headlines for this cluster
+            titles = df[df['cluster'] == cluster_id]['title'].tolist()
+            
+            logger.info(f"Summarizing Cluster {cluster_id} ({len(titles)} articles)...")
+            summary = llm.summarize_cluster(titles)
+            cluster_summaries[cluster_id] = summary
+            
+        # Map back to dataframe
+        df['llm_label'] = df['cluster'].map(cluster_summaries)
+        return df
+    
     # --------------------------
     # Group articles by topic similarity
     # --------------------------
@@ -272,6 +327,10 @@ def main():
         # Ensure embeddings column exists and is an array
         embeddings = np.array(df["embedding"].tolist())
         df, topic_groups = analyzer.group_by_topic_similarity(df, embeddings, threshold=0.75)
+
+        # --- Run LLM Summarization ---
+        df = analyzer.generate_smart_labels(df)
+        # ----------------------------------
 
         patterns = analyzer.detect_narrative_patterns(df)
         logger.info(f"Top narratives: {patterns['top_narratives']}")
